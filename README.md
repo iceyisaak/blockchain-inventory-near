@@ -1,127 +1,84 @@
-# `near-sdk-as` Starter Kit
+# Blockchain Inventory (NEAR)
+###### by: Iceyisaak 
+###### Date: 20211229
+<br>
 
-This is a good project to use as a starting point for your AssemblyScript project.
+## Description
 
-## Samples
+This app is a very simple blockchain app that lets users keep track of inventory on NEAR blockchain.
+ 
+It allows users to:
 
-This repository includes a complete project structure for AssemblyScript contracts targeting the NEAR platform.
+1. Deploy on NEAR blockchain
+2. `addProduct()` to the blockchain
+3. `getAllProducts()` from the blockchain
+4. `getProduct()` by ID
+<br>
+<br>
 
-The example here is very basic.  It's a simple contract demonstrating the following concepts:
-- a single contract
-- the difference between `view` vs. `change` methods
-- basic contract storage
+## Prerequisites
+- [Enable Yarn in NodeJS](https://yarnpkg.com/getting-started/install)
+- [Get NEAR Wallet](https://wallet.testnet.near.org/)
+<br>
+<br>
 
-There are 2 AssemblyScript contracts in this project, each in their own folder:
+## Getting Started
+1. Run `yarn` to install dependencies
+2. Run `./scripts/1.dev-deploy.sh` to set up a NEAR test account + deploy the smartcontract to it.
+   1. Look in the terminal log for your experimental contract that looks similar to `dev-###-###`, then run `export CONTRACT=<dev-123-456>`
+   2. Set your account as contract owner: `export OWNER=<your-near-account>`
+   3. Initialise Contract Owner: `near call \$CONTRACT init '{\"owner\":\"'\$OWNER'\"}' --accountId`
+3. Run `./scripts/2.use-contract.sh` to test run Contract
+<br>
+<br>
 
-- **simple** in the `src/simple` folder
-- **singleton** in the `src/singleton` folder
+## Functionalities
 
-### Simple
+### `addProduct(title: string, description: string, price: f64)`
 
-We say that an AssemblyScript contract is written in the "simple style" when the `index.ts` file (the contract entry point) includes a series of exported functions.
-
-In this case, all exported functions become public contract methods.
-
-```ts
-// return the string 'hello world'
-export function helloWorld(): string {}
-
-// read the given key from account (contract) storage
-export function read(key: string): string {}
-
-// write the given value at the given key to account (contract) storage
-export function write(key: string, value: string): string {}
-
-// private helper method used by read() and write() above
-private storageReport(): string {}
-```
-
-### Singleton
-
-We say that an AssemblyScript contract is written in the "singleton style" when the `index.ts` file (the contract entry point) has a single exported class (the name of the class doesn't matter) that is decorated with `@nearBindgen`.
-
-In this case, all methods on the class become public contract methods unless marked `private`.  Also, all instance variables are stored as a serialized instance of the class under a special storage key named `STATE`.  AssemblyScript uses JSON for storage serialization (as opposed to Rust contracts which use a custom binary serialization format called borsh).
-
-```ts
-@nearBindgen
-export class Contract {
-
-  // return the string 'hello world'
-  helloWorld(): string {}
-
-  // read the given key from account (contract) storage
-  read(key: string): string {}
-
-  // write the given value at the given key to account (contract) storage
-  @mutateState()
-  write(key: string, value: string): string {}
-
-  // private helper method used by read() and write() above
-  private storageReport(): string {}
-}
-```
-
-
-## Usage
-
-### Getting started
-
-(see below for video recordings of each of the following steps)
-
-1. clone this repo to a local folder
-2. run `yarn`
-3. run `./scripts/1.dev-deploy.sh`
-3. run `./scripts/2.use-contract.sh`
-4. run `./scripts/2.use-contract.sh` (yes, run it to see changes)
-5. run `./scripts/3.cleanup.sh`
-
-### Videos
-
-**`1.dev-deploy.sh`**
-
-This video shows the build and deployment of the contract.
-
-[![asciicast](https://asciinema.org/a/409575.svg)](https://asciinema.org/a/409575)
-
-**`2.use-contract.sh`**
-
-This video shows contract methods being called.  You should run the script twice to see the effect it has on contract state.
-
-[![asciicast](https://asciinema.org/a/409577.svg)](https://asciinema.org/a/409577)
-
-**`3.cleanup.sh`**
-
-This video shows the cleanup script running.  Make sure you add the `BENEFICIARY` environment variable. The script will remind you if you forget.
-
-```sh
-export BENEFICIARY=<your-account-here>   # this account receives contract account balance
-```
-
-[![asciicast](https://asciinema.org/a/409580.svg)](https://asciinema.org/a/409580)
-
-### Other documentation
-
-- See `./scripts/README.md` for documentation about the scripts
-- Watch this video where Willem Wyndham walks us through refactoring a simple example of a NEAR smart contract written in AssemblyScript
-
-  https://youtu.be/QP7aveSqRPo
-
+- Let users add product to the NEAR blockchain
+  
+  ```ts
+  near call $CONTRACT addProduct \
+  '{"title":"Product A","description":"This is the awesome Product A","price":9.99}' \
+  --accountId $OWNER
   ```
-  There are 2 "styles" of implementing AssemblyScript NEAR contracts:
-  - the contract interface can either be a collection of exported functions
-  - or the contract interface can be the methods of a an exported class
 
-  We call the second style "Singleton" because there is only one instance of the class which is serialized to the blockchain storage.  Rust contracts written for NEAR do this by default with the contract struct.
+### `getAllProducts(): Array<ProductDetail>`
 
-   0:00 noise (to cut)
-   0:10 Welcome
-   0:59 Create project starting with "npm init"
-   2:20 Customize the project for AssemblyScript development
-   9:25 Import the Counter example and get unit tests passing
-  18:30 Adapt the Counter example to a Singleton style contract
-  21:49 Refactoring unit tests to access the new methods
-  24:45 Review and summary
+- Let users get all products from the NEAR blockchain
+  
+  ```ts
+  near call $CONTRACT getAllProducts --accountId $OWNER
   ```
+
+### `getProduct(id: i32): ProductDetail`
+
+- Let users get a single product by ID from the NEAR blockchain
+
+  ```ts
+  near call $CONTRACT getProducts \
+  '{"id": ###}' \
+  --accountId $OWNER
+  ```
+<br>
+<br>
+
+
+## Cleaning Up
+1. Set Beneficiary Contract: `export BENEFICIARY=<your-near-account>`
+2. Run `./scripts/3.cleanup.sh/`
+<br>
+<br>
+
+## About This Project
+The project is developed as part of the NEAR Certified Developer Level 1
+- Inspired by 
+  - [Meme Museum L1](https://github.com/Learn-NEAR/NCD.L1.sample--meme-museum)
+  - [Sample Library L1](https://github.com/Learn-NEAR/NCD.L1.sample--library)
+- Built on top of [near-sdk-as Starterkit](https://github.com/Learn-NEAR/starter--near-sdk-as) 
+<br>
+<br>
 
 ## The file system
 
@@ -137,20 +94,13 @@ export BENEFICIARY=<your-account-here>   # this account receives contract accoun
 │   └── README.md                      # documentation for helper scripts
 ├── src
 │   ├── as_types.d.ts                  # AssemblyScript headers for type hints
-│   ├── simple                         # Contract 1: "Simple example"
+│   ├── inventory                         # Contract: "inventory"
 │   │   ├── __tests__
 │   │   │   ├── as-pect.d.ts           # as-pect unit testing headers for type hints
-│   │   │   └── index.unit.spec.ts     # unit tests for contract 1
+│   │   │   └── index.unit.spec.ts     # unit tests for the contract
 │   │   ├── asconfig.json              # configuration for AssemblyScript compiler (one per contract)
 │   │   └── assembly
-│   │       └── index.ts               # contract code for contract 1
-│   ├── singleton                      # Contract 2: "Singleton-style example"
-│   │   ├── __tests__
-│   │   │   ├── as-pect.d.ts           # as-pect unit testing headers for type hints
-│   │   │   └── index.unit.spec.ts     # unit tests for contract 2
-│   │   ├── asconfig.json              # configuration for AssemblyScript compiler (one per contract)
-│   │   └── assembly
-│   │       └── index.ts               # contract code for contract 2
+│   │       └── index.ts               # contract code for the contract
 │   ├── tsconfig.json                  # Typescript configuration
 │   └── utils.ts                       # common contract utility functions
 └── yarn.lock                          # project manifest version lock

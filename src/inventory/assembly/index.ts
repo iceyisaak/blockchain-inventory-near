@@ -34,7 +34,7 @@ export class Contract {
     return true
   }
 
-  getProducts(): Array<ProductDetail> {
+  getAllProducts(): Array<ProductDetail> {
     const result = new Array<ProductDetail>(Products.length)
     for (let i = 0; i < Products.length; i++) {
       result[i] = Products[i]
