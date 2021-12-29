@@ -5,8 +5,6 @@ import { ProductDetail, Products } from "./model"
 @nearBindgen
 export class Contract {
   private owner: AccountId
-  private message: string = 'hello world'
-
   constructor(owner: AccountId) {
     this.owner = owner
   }
