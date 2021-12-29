@@ -19,6 +19,7 @@ It allows users to:
 ## Prerequisites
 - [Enable Yarn in NodeJS](https://yarnpkg.com/getting-started/install)
 - [Get NEAR Wallet](https://wallet.testnet.near.org/)
+- Run `near login`
 <br>
 <br>
 
