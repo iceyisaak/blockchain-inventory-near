@@ -58,7 +58,7 @@ It allows users to:
 - Let users get a single product by ID from the NEAR blockchain
 
   ```ts
-  near call $CONTRACT getProducts \
+  near call $CONTRACT getProduct \
   '{"id": ###}' \
   --accountId $OWNER
   ```
